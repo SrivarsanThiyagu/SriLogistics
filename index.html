@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamEXP - Premium Logistics Solutions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #111827;
+      color: #f3f4f6;
+      transition: all 0.3s ease;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                  url('https://images.unsplash.com/photo-1603138461420-e24168721842?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .page-section {
+      display: none;
+    }
+    .page-section.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+    .login-modal, .success-modal {
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .login-modal.active, .success-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    input, textarea, select {
+      background-color: #1f2937;
+      border-color: #374151;
+      color: #f3f4f6;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
+  <!-- Mega Navbar -->
+  <header class="sticky top-0 bg-gray-800 text-white shadow-xl z-50 border-b border-gray-700">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="showPage('home')">
+          <i class="fas fa-shipping-fast text-2xl text-blue-400"></i>
+          <span class="text-2xl font-bold">TeamEXP</span>
+        </div>
+        <nav class="hidden lg:flex space-x-8">
+          <a onclick="showPage('home')" class="hover:text-blue-400 font-medium cursor-pointer">Home</a>
+          <a onclick="showPage('services')" class="hover:text-blue-400 font-medium cursor-pointer">Services</a>
+          <a onclick="showPage('about')" class="hover:text-blue-400 font-medium cursor-pointer">About Us</a>
+          <a onclick="showPage('tracking')" class="hover:text-blue-400 font-medium cursor-pointer">Tracking</a>
+          <a onclick="showPage('contact')" class="hover:text-blue-400 font-medium cursor-pointer">Contact</a>
+        </nav>
+        <div class="hidden lg:flex items-center space-x-6">
+          <button onclick="toggleLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold transition">
+            Login / Signup
+          </button>
+          <a onclick="showPage('pickup')" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-full font-bold transition cursor-pointer">
+            Request Pickup
+          </a>
+        </div>
+        <button class="lg:hidden text-2xl" id="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="lg:hidden hidden bg-gray-800" id="mobile-menu">
+      <div class="flex flex-col p-4 gap-4">
+        <a onclick="showPage('home')" class="hover:text-blue-400 cursor-pointer">Home</a>
+        <a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer">Services</a>
+        <a onclick="showPage('about')" class="hover:text-blue-400 cursor-pointer">About Us</a>
+        <a onclick="showPage('tracking')" class="hover:text-blue-400 cursor-pointer">Tracking</a>
+        <a onclick="showPage('contact')" class="hover:text-blue-400 cursor-pointer">Contact</a>
+        <button onclick="toggleLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full font-bold mt-2">
+          Login / Signup
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Modal -->
+  <div class="login-modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-8 w-full max-w-md relative border border-gray-700">
+      <button onclick="toggleLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+      <h2 class="text-3xl font-bold mb-6 text-center text-white">Welcome to TeamEXP</h2>
+      
+      <!-- Login Form -->
+      <div id="login-form">
+        <div class="mb-4">
+          <label class="block text-gray-300 mb-2">Email</label>
+          <input type="email" id="login-email" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2">Password</label>
+          <input type="password" id="login-password" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <button onclick="loginUser()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mb-4">
+          Login
+        </button>
+        <p class="text-center text-gray-400">
+          Don't have an account? 
+          <a href="#" onclick="showSignupForm()" class="text-blue-400 hover:underline">Sign up</a>
+        </p>
+      </div>
+      
+      <!-- Signup Form (Hidden by default) -->
+      <div id="signup-form" class="hidden">
+        <div class="mb-4">
+          <label class="block text-gray-300 mb-2">Full Name</label>
+          <input type="text" id="signup-name" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-300 mb-2">Email</label>
+          <input type="email" id="signup-email" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-300 mb-2">Phone Number</label>
+          <input type="tel" id="signup-phone" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2">Password</label>
+          <input type="password" id="signup-password" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+        </div>
+        <button onclick="signupUser()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mb-4">
+          Create Account
+        </button>
+        <p class="text-center text-gray-400">
+          Already have an account? 
+          <a href="#" onclick="showLoginForm()" class="text-blue-400 hover:underline">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-8 w-full max-w-md text-center border border-gray-700">
+      <div class="text-green-500 text-6xl mb-4">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3 class="text-2xl font-bold mb-4 text-white" id="success-title">Success!</h3>
+      <p class="text-gray-300 mb-6" id="success-message"></p>
+      <button onclick="closeSuccessModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- Home Page -->
+  <section id="home" class="page-section active">
+    <!-- Hero Section -->
+    <div class="hero-bg text-white py-32 text-center">
+      <div class="container mx-auto px-4">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          India's <span class="text-orange-400">Fastest</span> Courier Service
+        </h1>
+        <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-gray-300">
+          Premium logistics solutions with guaranteed on-time delivery across India
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a onclick="showPage('pickup')" class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all cursor-pointer">
+            Schedule Pickup <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+          <a onclick="showPage('tracking')" class="bg-gray-700 hover:bg-gray-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all cursor-pointer">
+            Track Shipment <i class="fas fa-search-location ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="bg-gray-800 text-white py-8 border-y border-gray-700">
+      <div class="container mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <div class="text-4xl font-bold mb-2 text-blue-400">5000+</div>
+            <div class="text-sm text-gray-300">Daily Shipments</div>
+          </div>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <div class="text-4xl font-bold mb-2 text-blue-400">200+</div>
+            <div class="text-sm text-gray-300">Cities Covered</div>
+          </div>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <div class="text-4xl font-bold mb-2 text-blue-400">24/7</div>
+            <div class="text-sm text-gray-300">Customer Support</div>
+          </div>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <div class="text-4xl font-bold mb-2 text-blue-400">96%</div>
+            <div class="text-sm text-gray-300">On-Time Delivery</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Preview -->
+    <section class="py-20 bg-gray-900">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">Our Core Services</h2>
+          <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-gray-800 p-8 rounded-xl shadow-md service-card border border-gray-700">
+            <div class="text-blue-400 text-4xl mb-4">
+              <i class="fas fa-truck"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Road Transport</h3>
+            <p class="text-gray-400 mb-4">Economical and reliable ground transportation across India</p>
+            <a onclick="showPage('services')" class="text-blue-400 font-medium cursor-pointer">Learn More →</a>
+          </div>
+          <div class="bg-gray-800 p-8 rounded-xl shadow-md service-card border border-gray-700">
+            <div class="text-blue-400 text-4xl mb-4">
+              <i class="fas fa-plane"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Air Cargo</h3>
+            <p class="text-gray-400 mb-4">Fastest delivery option for time-sensitive shipments</p>
+            <a onclick="showPage('services')" class="text-blue-400 font-medium cursor-pointer">Learn More →</a>
+          </div>
+          <div class="bg-gray-800 p-8 rounded-xl shadow-md service-card border border-gray-700">
+            <div class="text-blue-400 text-4xl mb-4">
+              <i class="fas fa-train"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Rail Logistics</h3>
+            <p class="text-gray-400 mb-4">Cost-effective bulk transportation solution</p>
+            <a onclick="showPage('services')" class="text-blue-400 font-medium cursor-pointer">Learn More →</a>
+          </div>
+        </div>
+        <div class="text-center mt-12">
+          <a onclick="showPage('services')" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold cursor-pointer">
+            View All Services <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- Services Page -->
+  <section id="services" class="page-section py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Our Services & Products</h2>
+        <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+        <p class="text-xl text-gray-400 mt-4 max-w-3xl mx-auto">
+          Comprehensive logistics solutions tailored to your business needs
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-truck"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Transport By Road</h3>
+          <p class="text-gray-400">Economical and reliable ground transportation network covering all major routes.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-train"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Transport By Rail</h3>
+          <p class="text-gray-400">Cost-effective bulk transportation through our rail cargo partnerships.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Parcel Services</h3>
+          <p class="text-gray-400">Door-to-door parcel delivery with real-time tracking.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Value Added Services</h3>
+          <p class="text-gray-400">Custom solutions including packaging, warehousing, and more.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Part Load Delivery</h3>
+          <p class="text-gray-400">Flexible solutions for Air, Rail, and Truck part-load shipments.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">E-Commerce Delivery</h3>
+          <p class="text-gray-400">Specialized solutions for e-commerce consignments.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-building"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Godown Transportation</h3>
+          <p class="text-gray-400">Warehouse to warehouse bulk transportation solutions.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Door to Door</h3>
+          <p class="text-gray-400">Complete pickup to delivery solutions for all shipment types.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card border border-gray-700">
+          <div class="text-blue-400 text-3xl mb-4">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Join Our Team</h3>
+          <p class="text-gray-400">Opportunities as delivery agents or franchise partners.</p>
+          <button onclick="showPage('contact')" class="mt-4 text-blue-400 font-medium cursor-pointer">
+            Apply Now →
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-16 bg-gray-800 p-8 rounded-xl border border-gray-700">
+        <h3 class="text-2xl font-bold mb-4 text-center">Why Choose TeamEXP?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h4 class="text-lg font-semibold mb-2 text-blue-400">Our Technology</h4>
+            <p class="text-gray-400 mb-4">Real-time ERP software with shipment tracking, SMS/Email alerts, and client web portal access.</p>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-2 text-blue-400">Our Promise</h4>
+            <p class="text-gray-400 mb-4">96% delivery attempt rate within 24-48 hours across our PAN India network.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Page -->
+  <section id="about" class="page-section py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">About TeamEXP</h2>
+        <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div>
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
+               alt="TeamEXP Warehouse" 
+               class="rounded-xl shadow-2xl w-full border border-gray-700">
+        </div>
+        <div>
+          <h3 class="text-3xl font-bold mb-6">Our Story</h3>
+          <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+            <strong class="text-white">Team Express Pvt. Ltd.</strong> is one of the leading courier, cargo and logistics companies in India. 
+            Founded in 2019 with a mission to provide customers world-class courier services and professionalism.
+          </p>
+          <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+            We serve PAN India with established distribution alliances and partners, with networks in all major cities. 
+            Currently serving PAN India with a proven track record of 96% delivery attempt within 24-48 hours.
+          </p>
+          <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+            We provide integrated supply chain solutions by air, surface or rail routes. Our expertise along with our 
+            home-grown tech infrastructure enables clients to manage their flow of goods in real-time, making the entire 
+            delivery process transparent and easy to manage.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 p-8 rounded-xl shadow-md mb-16 border border-gray-700">
+        <h3 class="text-3xl font-bold mb-8 text-center">Our Vision & Values</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="flex items-start">
+            <div class="bg-blue-900 p-3 rounded-full mr-4">
+              <i class="fas fa-bullseye text-blue-400"></i>
+            </div>
+            <div>
+              <h4 class="text-xl font-bold mb-2">Our Vision</h4>
+              <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                <li>To be the first choice of our customers</li>
+                <li>World-class network of offices and warehouses with error-free operations</li>
+                <li>Globally preferred provider of India-centric Supply Chain Services</li>
+                <li>Delight customers through innovation and technology</li>
+                <li>Be a responsible corporate citizen committed to environmental protection</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="bg-blue-900 p-3 rounded-full mr-4">
+              <i class="fas fa-handshake text-blue-400"></i>
+            </div>
+            <div>
+              <h4 class="text-xl font-bold mb-2">Our Values</h4>
+              <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                <li><strong class="text-white">Global Logistics:</strong> Worldwide leader in Services, Systems & Product Development</li>
+                <li><strong class="text-white">Integrity:</strong> Honest and responsible operations</li>
+                <li><strong class="text-white">Safety & Health:</strong> Promoting wellbeing of individuals</li>
+                <li><strong class="text-white">Quality:</strong> Services that exceed expectations</li>
+                <li><strong class="text-white">People:</strong> Our greatest assets are our employees</li>
+                <li><strong class="text-white">Excellence:</strong> Continuous improvement in everything we do</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <h3 class="text-3xl font-bold mb-6">Let's Do Something Together</h3>
+        <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+          Partner with TeamEXP for all your logistics needs and experience world-class service delivery.
+        </p>
+        <a onclick="showPage('contact')" class="inline-block bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-bold cursor-pointer">
+          Contact Us <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tracking Page -->
+  <section id="tracking" class="page-section py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Track Your Shipment</h2>
+        <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+        <p class="text-xl text-gray-400 mt-4 max-w-3xl mx-auto">
+          Enter your tracking number to check the current status of your shipment
+        </p>
+      </div>
+
+      <div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700">
+        <div class="mb-8">
+          <label class="block text-gray-300 mb-2 text-lg">Tracking Number</label>
+          <div class="flex">
+            <input type="text" id="tracking-number" class="flex-grow p-4 border border-gray-700 rounded-l-lg text-lg bg-gray-700 text-white" placeholder="e.g., TEXP123456789">
+            <button onclick="trackShipment()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-r-lg">
+              <i class="fas fa-search"></i> Track
+            </button>
+          </div>
+        </div>
+
+        <div id="tracking-result" class="hidden">
+          <div class="border-l-4 border-blue-500 pl-4 mb-8">
+            <h3 class="text-xl font-bold mb-2">Shipment Details</h3>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p class="text-gray-400">Tracking Number:</p>
+                <p class="font-bold" id="result-tracking-number">TEXP123456789</p>
+              </div>
+              <div>
+                <p class="text-gray-400">Status:</p>
+                <p class="font-bold text-green-500" id="result-status">In Transit</p>
+              </div>
+              <div>
+                <p class="text-gray-400">Origin:</p>
+                <p class="font-bold" id="result-origin">Mumbai</p>
+              </div>
+              <div>
+                <p class="text-gray-400">Destination:</p>
+                <p class="font-bold" id="result-destination">Delhi</p>
+              </div>
+            </div>
+          </div>
+
+          <h4 class="text-lg font-bold mb-4">Shipment Progress</h4>
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="bg-green-500 text-white rounded-full p-2 mr-4 mt-1">
+                <i class="fas fa-check"></i>
+              </div>
+              <div>
+                <h5 class="font-bold">Delivered</h5>
+                <p class="text-gray-400 text-sm">May 25, 2024 - 11:30 AM</p>
+                <p class="text-gray-400">Delivered to recipient</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-500 text-white rounded-full p-2 mr-4 mt-1">
+                <i class="fas fa-truck"></i>
+              </div>
+              <div>
+                <h5 class="font-bold">Out for Delivery</h5>
+                <p class="text-gray-400 text-sm">May 25, 2024 - 9:15 AM</p>
+                <p class="text-gray-400">Delivery agent assigned</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-500 text-white rounded-full p-2 mr-4 mt-1">
+                <i class="fas fa-warehouse"></i>
+              </div>
+              <div>
+                <h5 class="font-bold">At Local Facility</h5>
+                <p class="text-gray-400 text-sm">May 24, 2024 - 6:30 PM</p>
+                <p class="text-gray-400">Package arrived at Delhi hub</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-500 text-white rounded-full p-2 mr-4 mt-1">
+                <i class="fas fa-plane"></i>
+              </div>
+              <div>
+                <h5 class="font-bold">In Transit</h5>
+                <p class="text-gray-400 text-sm">May 24, 2024 - 1:45 PM</p>
+                <p class="text-gray-400">Departed from Mumbai airport</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-500 text-white rounded-full p-2 mr-4 mt-1">
+                <i class="fas fa-box"></i>
+              </div>
+              <div>
+                <h5 class="font-bold">Picked Up</h5>
+                <p class="text-gray-400 text-sm">May 23, 2024 - 4:20 PM</p>
+                <p class="text-gray-400">Package collected from sender</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tracking-not-found" class="hidden text-center py-8">
+          <div class="text-red-500 text-5xl mb-4">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <h4 class="text-xl font-bold mb-2">Shipment Not Found</h4>
+          <p class="text-gray-400 mb-4">We couldn't find a shipment with that tracking number.</p>
+          <p class="text-gray-400">Please check the number and try again, or contact our support team.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pickup Page -->
+  <section id="pickup" class="page-section py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Schedule a Pickup</h2>
+        <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+        <p class="text-xl text-gray-400 mt-4 max-w-3xl mx-auto">
+          Fill out the form below and we'll pick up your shipment at your preferred time
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700">
+          <h3 class="text-2xl font-bold mb-6">Pickup Information</h3>
+          <form id="pickup-form">
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Full Name</label>
+              <input type="text" id="pickup-name" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Email</label>
+              <input type="email" id="pickup-email" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Phone Number</label>
+              <input type="tel" id="pickup-phone" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Pickup Address</label>
+              <textarea id="pickup-address" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" rows="3" required></textarea>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Package Type</label>
+              <select id="pickup-type" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+                <option value="">Select package type</option>
+                <option>Document</option>
+                <option>Parcel (under 5kg)</option>
+                <option>Heavy Shipment (5-20kg)</option>
+                <option>Bulk Cargo (20kg+)</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Preferred Pickup Date/Time</label>
+              <input type="datetime-local" id="pickup-time" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Special Instructions</label>
+              <textarea id="pickup-instructions" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" rows="2"></textarea>
+            </div>
+            <button type="button" onclick="submitPickup()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">
+              Schedule Pickup
+            </button>
+          </form>
+        </div>
+        <div class="bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700">
+          <h3 class="text-2xl font-bold mb-6">Pickup Guidelines</h3>
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="bg-blue-900 text-blue-400 rounded-full p-2 mr-4">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div>
+                <h4 class="font-bold mb-2">Pickup Hours</h4>
+                <p class="text-gray-400">Monday-Saturday: 8:00 AM - 8:00 PM</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-900 text-blue-400 rounded-full p-2 mr-4">
+                <i class="fas fa-box"></i>
+              </div>
+              <div>
+                <h4 class="font-bold mb-2">Packaging Tips</h4>
+                <ul class="list-disc pl-5 text-gray-400 space-y-1">
+                  <li>Use sturdy boxes for heavy items</li>
+                  <li>Seal packages securely with tape</li>
+                  <li>Include fragile markings if needed</li>
+                </ul>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-900 text-blue-400 rounded-full p-2 mr-4">
+                <i class="fas fa-ban"></i>
+              </div>
+              <div>
+                <h4 class="font-bold mb-2">Prohibited Items</h4>
+                <ul class="list-disc pl-5 text-gray-400 space-y-1">
+                  <li>Hazardous materials</li>
+                  <li>Illegal substances</li>
+                  <li>Perishable goods (without approval)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-blue-900 text-blue-400 rounded-full p-2 mr-4">
+                <i class="fas fa-phone-alt"></i>
+              </div>
+              <div>
+                <h4 class="font-bold mb-2">Need Help?</h4>
+                <p class="text-gray-400">Call our support team at <span class="font-bold text-white">+91 9876543210</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Page -->
+  <section id="contact" class="page-section py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Contact Us</h2>
+        <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+        <p class="text-xl text-gray-400 mt-4 max-w-3xl mx-auto">
+          Get in touch with our team for any inquiries or support
+        </p>
+      </div>
+
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700">
+          <h3 class="text-2xl font-bold mb-6">Send Us a Message</h3>
+          <form id="contact-form">
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Name</label>
+              <input type="text" id="contact-name" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Email</label>
+              <input type="email" id="contact-email" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Phone</label>
+              <input type="tel" id="contact-phone" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white">
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Subject</label>
+              <select id="contact-subject" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" required>
+                <option value="">Select a subject</option>
+                <option>General Inquiry</option>
+                <option>Delivery Issue</option>
+                <option>Franchise Opportunity</option>
+                <option>Delivery Agent Application</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-300 mb-2">Message</label>
+              <textarea id="contact-message" class="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white" rows="5" required></textarea>
+            </div>
+            <button type="button" onclick="submitContact()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">
+              Send Message
+            </button>
+          </form>
+        </div>
+        <div>
+          <div class="bg-gray-800 p-8 rounded-xl shadow-md mb-8 border border-gray-700">
+            <h3 class="text-2xl font-bold mb-6">Our Offices</h3>
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="text-blue-400 text-xl mr-4 mt-1">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Headquarters</h4>
+                  <p class="text-gray-400">123 Logistics Park, Andheri East, Mumbai - 400069</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="text-blue-400 text-xl mr-4 mt-1">
+                  <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Phone</h4>
+                  <p class="text-gray-400">+91 9876543210</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="text-blue-400 text-xl mr-4 mt-1">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Email</h4>
+                  <p class="text-gray-400">support@teamexp.in</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="text-blue-400 text-xl mr-4 mt-1">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Working Hours</h4>
+                  <p class="text-gray-400">Monday-Saturday: 8:00 AM - 8:00 PM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-800 p-8 rounded-xl shadow-md border border-gray-700">
+            <h3 class="text-2xl font-bold mb-6">Career Opportunities</h3>
+            <p class="text-gray-400 mb-6">Join our growing team of logistics professionals:</p>
+            <div class="space-y-4">
+              <div class="p-4 border border-gray-700 rounded-lg hover:bg-gray-700 cursor-pointer">
+                <h4 class="font-bold mb-1">Delivery Agents</h4>
+                <p class="text-gray-400 text-sm">Flexible hours, competitive pay</p>
+              </div>
+              <div class="p-4 border border-gray-700 rounded-lg hover:bg-gray-700 cursor-pointer">
+                <h4 class="font-bold mb-1">Franchise Partners</h4>
+                <p class="text-gray-400 text-sm">Own and operate your TeamEXP branch</p>
+              </div>
+              <div class="p-4 border border-gray-700 rounded-lg hover:bg-gray-700 cursor-pointer">
+                <h4 class="font-bold mb-1">Operations Staff</h4>
+                <p class="text-gray-400 text-sm">Warehouse and logistics management</p>
+              </div>
+            </div>
+            <button onclick="showPage('contact')" class="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-bold">
+              Apply Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 border-t border-gray-700">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <i class="fas fa-shipping-fast text-2xl text-blue-400"></i>
+            <span class="text-2xl font-bold">TeamEXP</span>
+          </div>
+          <p class="mb-4 text-gray-400">Premium logistics and courier services across India.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a onclick="showPage('home')" class="hover:text-blue-400 cursor-pointer text-gray-400">Home</a></li>
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">Services</a></li>
+            <li><a onclick="showPage('tracking')" class="hover:text-blue-400 cursor-pointer text-gray-400">Tracking</a></li>
+            <li><a onclick="showPage('about')" class="hover:text-blue-400 cursor-pointer text-gray-400">About Us</a></li>
+            <li><a onclick="showPage('contact')" class="hover:text-blue-400 cursor-pointer text-gray-400">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Services</h3>
+          <ul class="space-y-2">
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">Road Transport</a></li>
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">Air Cargo</a></li>
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">Rail Logistics</a></li>
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">E-commerce Delivery</a></li>
+            <li><a onclick="showPage('services')" class="hover:text-blue-400 cursor-pointer text-gray-400">Value Added Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">Contact Info</h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-2 text-gray-400"></i>
+              <span class="text-gray-400">123 Logistics Park, Mumbai - 400069</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-phone-alt mt-1 mr-2 text-gray-400"></i>
+              <span class="text-gray-400">+91 9876543210</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope mt-1 mr-2 text-gray-400"></i>
+              <span class="text-gray-400">support@teamexp.in</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <hr class="border-gray-700 my-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400">© 2024 Team Express Pvt. Ltd. All rights reserved.</p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="hover:text-blue-400 text-gray-400">Privacy Policy</a>
+          <a href="#" class="hover:text-blue-400 text-gray-400">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Page Navigation System
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Show selected page
+      document.getElementById(pageId).classList.add('active');
+      
+      // Close mobile menu if open
+      document.getElementById('mobile-menu').classList.add('hidden');
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Mobile Menu Toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Login Modal Functions
+    function toggleLoginModal() {
+      document.querySelector('.login-modal').classList.toggle('active');
+      document.getElementById('mobile-menu').classList.add('hidden');
+    }
+
+    function showLoginForm() {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    }
+
+    function showSignupForm() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+    }
+
+    // Success Modal Functions
+    function showSuccessModal(title, message) {
+      document.getElementById('success-title').textContent = title;
+      document.getElementById('success-message').textContent = message;
+      document.querySelector('.success-modal').classList.add('active');
+    }
+
+    function closeSuccessModal() {
+      document.querySelector('.success-modal').classList.remove('active');
+    }
+
+    // Close modals when clicking outside
+    document.querySelector('.login-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        toggleLoginModal();
+      }
+    });
+
+    document.querySelector('.success-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeSuccessModal();
+      }
+    });
+
+    // Form Submission Functions
+    function loginUser() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // In a real app, you would call your backend API here
+      toggleLoginModal();
+      showSuccessModal('Login Successful', 'You have been logged in successfully.');
+    }
+
+    function signupUser() {
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const phone = document.getElementById('signup-phone').value;
+      const password = document.getElementById('signup-password').value;
+      
+      if (!name || !email || !phone || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // In a real app, you would call your backend API here
+      toggleLoginModal();
+      showSuccessModal('Account Created', 'Your account has been created successfully. Please check your email for verification.');
+    }
+
+    function submitPickup() {
+      const name = document.getElementById('pickup-name').value;
+      const email = document.getElementById('pickup-email').value;
+      const phone = document.getElementById('pickup-phone').value;
+      const address = document.getElementById('pickup-address').value;
+      const type = document.getElementById('pickup-type').value;
+      const time = document.getElementById('pickup-time').value;
+      
+      if (!name || !email || !phone || !address || !type || !time) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // In a real app, you would call your backend API here
+      showSuccessModal('Pickup Scheduled', 'Your pickup has been scheduled successfully. Our agent will contact you shortly at ' + phone + '.');
+      document.getElementById('pickup-form').reset();
+    }
+
+    function submitContact() {
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value;
+      
+      if (!name || !email || !subject || !message) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // In a real app, you would call your backend API here
+      showSuccessModal('Message Sent', 'Thank you for contacting us! We will get back to you within 24 hours.');
+      document.getElementById('contact-form').reset();
+    }
+
+    function trackShipment() {
+      const trackingNumber = document.getElementById('tracking-number').value;
+      
+      if (!trackingNumber) {
+        alert('Please enter a tracking number');
+        return;
+      }
+      
+      document.getElementById('tracking-result').classList.remove('hidden');
+      document.getElementById('tracking-not-found').classList.add('hidden');
+      
+      document.getElementById('result-tracking-number').textContent = trackingNumber;
+    }
+
+    
+    showPage('home');
+  </script>
+</body>
+</html>
